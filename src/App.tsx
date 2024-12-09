@@ -65,7 +65,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <div className="max-w-3xl mx-auto px-4 py-0">
         {!studentData ? (
           <>
             <div className="flex justify-center">
@@ -75,10 +75,9 @@ export default function App() {
                 className="w-[600px] h-[300px] object-contain"
               />
             </div>
-
-            <div className="space-y-2">
-              <Announcements />
-              <FeaturedStudents />
+            <Announcements />
+            <FeaturedStudents />
+            <div className="mt-8">
               <StudentSearch onSearch={handleSearch} isSearching={isSearching} autoFocus />
               <AppTitle />
               <Footer />
