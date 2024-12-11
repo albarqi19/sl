@@ -4,9 +4,10 @@ import { Search } from 'lucide-react';
 
 interface QRScannerProps {
   onScan: (studentId: string) => void;
+  isGray: boolean;
 }
 
-export const QRScanner: React.FC<QRScannerProps> = ({ onScan }) => {
+export const QRScanner: React.FC<QRScannerProps> = ({ onScan, isGray }) => {
   const [isScanning, setIsScanning] = useState(false);
   const [scanner, setScanner] = useState<Html5Qrcode | null>(null);
 
@@ -56,11 +57,11 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScan }) => {
   return (
     <div className="w-full max-w-md mx-auto">
       {isScanning ? (
-        <div className="relative rounded-lg overflow-hidden bg-white p-4">
+        <div className={`relative rounded-lg overflow-hidden p-4 ${isGray ? 'bg-gray-100' : 'bg-white'}`}>
           <div id="reader" className="w-full"></div>
           <button
             onClick={handleStopScan}
-            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full"
+            className={`absolute top-2 right-2 p-2 rounded-full ${isGray ? 'bg-gray-500 text-gray-100' : 'bg-red-500 text-white'}`}
           >
             إغلاق
           </button>
@@ -68,7 +69,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScan }) => {
       ) : (
         <button
           onClick={handleStartScan}
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition-colors"
+          className={`w-full flex items-center justify-center gap-2 p-4 rounded-lg transition-colors ${isGray ? 'bg-gray-600 text-gray-100 hover:bg-gray-700' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
         >
           <Search className="w-6 h-6" />
           مسح رمز QR

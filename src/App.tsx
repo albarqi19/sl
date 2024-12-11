@@ -4,6 +4,7 @@ import { StudentCard } from './components/StudentCard';
 import { Announcements } from './components/Announcements';
 import { FeaturedStudents } from './components/FeaturedStudents';
 import { Search } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import type { Student } from './types';
 import logoImage from './assets/logo.png';
@@ -14,6 +15,7 @@ export default function App() {
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isGray, setIsGray] = useState(false);
 
   const handleSearch = async (studentId: string) => {
     setIsSearching(true);
@@ -63,24 +65,39 @@ export default function App() {
     }
   };
 
+  const toggleColor = () => {
+    setIsGray(!isGray);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+    <div className={isGray ? 'min-h-screen bg-gray-200 text-gray-800' : 'min-h-screen bg-gradient-to-b from-amber-50 to-white text-brown-800'}>
       <div className="max-w-3xl mx-auto px-4 py-0">
+        {/* زر تغيير اللون في الزاوية العلوية */}
+        <div className="absolute top-4 left-4">
+          <div
+            onClick={toggleColor}
+            className={`cursor-pointer relative w-8 h-8 flex items-center justify-center ${isGray ? 'bg-gray-800' : 'bg-amber-100'} rounded-full transition-all duration-300 ease-in-out shadow-lg overflow-hidden`}
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              {isGray ? <Moon className="w-4 h-4 text-gray-200" /> : <Sun className="w-4 h-4 text-amber-600" />}
+            </div>
+          </div>
+        </div>
         {!studentData ? (
           <>
             <div className="flex justify-center">
               <img 
                 src={logoImage} 
                 alt="شعار المسجد" 
-                className="w-[600px] h-[300px] object-contain"
+                className={isGray ? "w-[600px] h-[300px] object-contain grayscale" : "w-[600px] h-[300px] object-contain"}
               />
             </div>
-            <Announcements />
+            <Announcements isGray={isGray} />
             <FeaturedStudents />
             <div className="mt-8">
-              <StudentSearch onSearch={handleSearch} isSearching={isSearching} autoFocus />
-              <AppTitle />
-              <Footer />
+              <StudentSearch onSearch={handleSearch} isSearching={isSearching} autoFocus isGray={isGray} />
+              <AppTitle isGray={isGray} />
+              <Footer isGray={isGray} />
             </div>
           </>
         ) : (
@@ -89,7 +106,7 @@ export default function App() {
               <img 
                 src={logoImage} 
                 alt="شعار المسجد" 
-                className="w-[600px] h-[300px] object-contain"
+                className={isGray ? "w-[600px] h-[300px] object-contain grayscale" : "w-[600px] h-[300px] object-contain"}
               />
             </div>
             <StudentCard
@@ -98,18 +115,18 @@ export default function App() {
               onSearch={handleSearch}
               isSearching={isSearching}
             />
-            <AppTitle />
-            <Footer />
+            <AppTitle isGray={isGray} />
+            <Footer isGray={isGray} />
           </>
         )}
       </div>
 
       {isSearching && (
-        <div className="fixed inset-0 bg-amber-50/60 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className={isGray ? "fixed inset-0 bg-gray-200/60 backdrop-blur-sm flex items-center justify-center z-50" : "fixed inset-0 bg-amber-50/60 backdrop-blur-sm flex items-center justify-center z-50"}>
           <div className="text-center space-y-4">
             <div className="relative w-20 h-20 mx-auto">
               <Search 
-                className="w-20 h-20 text-amber-700" 
+                className={isGray ? "w-20 h-20 text-gray-700" : "w-20 h-20 text-amber-700"} 
                 style={{ 
                   filter: 'drop-shadow(0 0 8px rgba(180, 83, 9, 0.5))',
                   animation: 'searchWave 1.5s ease-in-out infinite'
@@ -117,8 +134,8 @@ export default function App() {
               />
             </div>
             <div className="space-y-2">
-              <p className="text-2xl font-medium text-amber-900">جاري البحث</p>
-              <p className="text-sm text-amber-700">يرجى الانتظار...</p>
+              <p className={isGray ? "text-2xl font-medium text-gray-900" : "text-2xl font-medium text-amber-900"}>جاري البحث</p>
+              <p className={isGray ? "text-sm text-gray-700" : "text-sm text-amber-700"}>يرجى الانتظار...</p>
             </div>
           </div>
         </div>
