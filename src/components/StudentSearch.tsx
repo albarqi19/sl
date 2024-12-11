@@ -8,6 +8,7 @@ interface StudentSearchProps {
   isSearching: boolean;
   compact?: boolean;
   autoFocus?: boolean;
+  isGray: boolean;
 }
 
 export const StudentSearch: React.FC<StudentSearchProps> = ({
@@ -15,6 +16,7 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
   isSearching,
   compact = false,
   autoFocus = false,
+  isGray,
 }) => {
   const [showQR, setShowQR] = useState(false);
   const [studentId, setStudentId] = useState('');
@@ -46,7 +48,7 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
             placeholder="بحث سريع برقم الهوية"
-            className="w-full px-3 py-2 rounded-lg border border-amber-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-200 transition-colors text-sm"
+            className={`w-full px-3 py-2 rounded-lg transition-colors ${isGray ? 'border-gray-200 focus:border-gray-500 focus:ring-gray-200' : 'border-amber-200 focus:border-amber-500 focus:ring-amber-200'}`}
             autoFocus={autoFocus}
             maxLength={10}
             disabled={isSearching}
@@ -60,7 +62,7 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
     <div className="w-full max-w-md mx-auto space-y-4">
       {showQR ? (
         <div className="relative">
-          <QRScanner onScan={onSearch} />
+          <QRScanner onScan={onSearch} isGray={isGray} />
           <button
             onClick={() => setShowQR(false)}
             className="mt-4 w-full text-amber-700 hover:text-amber-800 transition-colors"
@@ -77,7 +79,7 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
               placeholder="أدخل رقم هوية الطالب"
-              className="w-full px-4 py-3 rounded-lg border border-amber-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-200 transition-colors"
+              className={`w-full px-4 py-3 rounded-lg transition-colors ${isGray ? 'border-gray-200 focus:border-gray-500 focus:ring-gray-200' : 'border-amber-200 focus:border-amber-500 focus:ring-amber-200'}`}
               autoFocus={autoFocus}
               maxLength={10}
               disabled={isSearching}
@@ -86,7 +88,11 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
 
           <button
             onClick={() => setShowQR(true)}
-            className="w-full flex items-center justify-center gap-2 bg-amber-50 text-amber-700 p-4 rounded-lg hover:bg-amber-100 transition-colors"
+            className={`w-full flex items-center justify-center gap-2 p-4 rounded-lg transition-colors ${
+              isGray 
+                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
+                : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+            }`}
             disabled={isSearching}
           >
             <QrCode className="w-6 h-6" />
