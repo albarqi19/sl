@@ -102,7 +102,7 @@ export default function App() {
               <div className="mt-4 flex justify-center gap-4">
                 <button
                   onClick={() => {
-                    setShowLevels(true);
+                    setShowLevels(!showLevels);
                     setShowRules(false);
                   }}
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
@@ -120,7 +120,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => {
-                    setShowRules(true);
+                    setShowRules(!showRules);
                     setShowLevels(false);
                   }}
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
