@@ -72,7 +72,7 @@ export default function App() {
 
   return (
     <div className={isGray ? 'min-h-screen bg-gray-200 text-gray-800' : 'min-h-screen bg-gradient-to-b from-amber-50 to-white text-brown-800'}>
-      <div className="max-w-3xl mx-auto px-4 py-0">
+      <div className="max-w-3xl mx-auto px-4 py-0 pb-0">
         {/* زر تغيير اللون في الزاوية العلوية */}
         <div className="absolute top-4 left-4">
           <div
