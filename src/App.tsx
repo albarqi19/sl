@@ -3,7 +3,7 @@ import { StudentSearch } from './components/StudentSearch';
 import { StudentCard } from './components/StudentCard';
 import { Announcements } from './components/Announcements';
 import { FeaturedStudents } from './components/FeaturedStudents';
-import { Search, Sun, Moon, Trophy, Medal, ListChecks } from 'lucide-react';
+import { Search, Sun, Moon, Trophy } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import type { Student } from './types';
 import logoImage from './assets/logo.png';
@@ -97,7 +97,7 @@ export default function App() {
             <FeaturedStudents />
             <div className="mt-8">
               <StudentSearch onSearch={handleSearch} isSearching={isSearching} autoFocus isGray={isGray} />
-              <div className="mt-4 flex justify-center gap-4">
+              <div className="mt-4 flex justify-center">
                 <button
                   onClick={() => setShowLevels(!showLevels)}
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
@@ -108,30 +108,6 @@ export default function App() {
                 >
                   <Trophy className="w-5 h-5" />
                   المستويات
-                </button>
-                <button
-                  disabled
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors opacity-70 cursor-not-allowed ${
-                    isGray
-                      ? 'bg-gray-100 text-gray-700'
-                      : 'bg-amber-50 text-amber-700'
-                  }`}
-                >
-                  <Medal className="w-5 h-5" />
-                  الأعلى نقاطاً
-                  <span className="text-xs">(قريباً)</span>
-                </button>
-                <button
-                  disabled
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors opacity-70 cursor-not-allowed ${
-                    isGray
-                      ? 'bg-gray-100 text-gray-700'
-                      : 'bg-amber-50 text-amber-700'
-                  }`}
-                >
-                  <ListChecks className="w-5 h-5" />
-                  البنود
-                  <span className="text-xs">(قريباً)</span>
                 </button>
               </div>
               {showLevels && <div className="mt-4"><Levels isGray={isGray} /></div>}
