@@ -3,13 +3,14 @@ import { StudentSearch } from './components/StudentSearch';
 import { StudentCard } from './components/StudentCard';
 import { Announcements } from './components/Announcements';
 import { FeaturedStudents } from './components/FeaturedStudents';
-import { Search, Sun, Moon, Trophy } from 'lucide-react';
+import { Search, Sun, Moon, Trophy, BookOpen } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import type { Student } from './types';
 import logoImage from './assets/logo.png';
 import { AppTitle } from './components/AppTitle';
 import { Footer } from './components/Footer';
 import { Levels } from './components/Levels';
+import { Rules } from './components/Rules';
 
 export default function App() {
   const [studentData, setStudentData] = useState<Student | null>(null);
@@ -17,6 +18,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isGray, setIsGray] = useState(true);
   const [showLevels, setShowLevels] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   const handleSearch = async (studentId: string) => {
     setIsSearching(true);
@@ -97,20 +99,46 @@ export default function App() {
             <FeaturedStudents />
             <div className="mt-8">
               <StudentSearch onSearch={handleSearch} isSearching={isSearching} autoFocus isGray={isGray} />
-              <div className="mt-4 flex justify-center">
+              <div className="mt-4 flex justify-center gap-4">
                 <button
-                  onClick={() => setShowLevels(!showLevels)}
+                  onClick={() => {
+                    setShowLevels(true);
+                    setShowRules(false);
+                  }}
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
                     isGray
-                      ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                      ? showLevels 
+                        ? 'bg-gray-700 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : showLevels
+                        ? 'bg-amber-600 text-white'
+                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
                   }`}
                 >
                   <Trophy className="w-5 h-5" />
                   المستويات
                 </button>
+                <button
+                  onClick={() => {
+                    setShowRules(true);
+                    setShowLevels(false);
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
+                    isGray
+                      ? showRules
+                        ? 'bg-gray-700 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : showRules
+                        ? 'bg-amber-600 text-white'
+                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                  }`}
+                >
+                  <BookOpen className="w-5 h-5" />
+                  البنود
+                </button>
               </div>
               {showLevels && <div className="mt-4"><Levels isGray={isGray} /></div>}
+              {showRules && <Rules isGray={isGray} />}
               <AppTitle isGray={isGray} />
               <Footer isGray={isGray} />
             </div>
