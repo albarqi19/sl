@@ -137,8 +137,12 @@ export default function App() {
                   البنود
                 </button>
               </div>
-              {showLevels && <div className="mt-4"><Levels isGray={isGray} /></div>}
-              {showRules && <Rules isGray={isGray} />}
+              {showLevels && (
+                <div className="mt-4">
+                  <Levels isGray={isGray} onClose={() => setShowLevels(false)} />
+                </div>
+              )}
+              {showRules && <Rules isGray={isGray} onClose={() => setShowRules(false)} />}
               <AppTitle isGray={isGray} />
               <Footer isGray={isGray} />
             </div>
