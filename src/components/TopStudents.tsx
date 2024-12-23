@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Trophy, X } from 'lucide-react';
+import { Trophy, X, Medal, Crown } from 'lucide-react';
 
 interface TopStudent {
   name: string;
@@ -22,8 +22,8 @@ export const TopStudents: React.FC<TopStudentsProps> = ({ isGray }) => {
     setLoading(true);
     try {
       const apiUrl = import.meta.env.PROD 
-        ? '/api/top-students'  
-        : 'http://localhost:3000/api/top-students';  
+        ? '/api/top-students'
+        : 'http://localhost:3000/api/top-students';
       
       const response = await fetch(apiUrl);
       const data = await response.json();
@@ -50,6 +50,34 @@ export const TopStudents: React.FC<TopStudentsProps> = ({ isGray }) => {
     setShowList(false);
   };
 
+  const getRankIcon = (index: number) => {
+    switch (index) {
+      case 0:
+        return <Crown className="w-6 h-6 text-amber-500" />;
+      case 1:
+        return <Medal className="w-6 h-6 text-blue-500" />;
+      case 2:
+        return <Medal className="w-6 h-6 text-emerald-600" />;
+      default:
+        return null;
+    }
+  };
+
+  const getRankStyle = (index: number) => {
+    switch (index) {
+      case 0:
+        return 'bg-amber-50 border-amber-200';
+      case 1:
+        return 'bg-blue-50 border-blue-200';
+      case 2:
+        return 'bg-emerald-50 border-emerald-200';
+      default:
+        return isGray 
+          ? index % 2 === 0 ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-100'
+          : index % 2 === 0 ? 'bg-amber-50/30 border-amber-100' : 'bg-white border-amber-50';
+    }
+  };
+
   return (
     <>
       <motion.button
@@ -72,7 +100,6 @@ export const TopStudents: React.FC<TopStudentsProps> = ({ isGray }) => {
 
       {showList && (
         <>
-          {/* Overlay Background */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -81,7 +108,6 @@ export const TopStudents: React.FC<TopStudentsProps> = ({ isGray }) => {
             onClick={handleClose}
           />
           
-          {/* Content */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -93,46 +119,66 @@ export const TopStudents: React.FC<TopStudentsProps> = ({ isGray }) => {
             <div 
               className={`w-full max-w-md relative ${
                 isGray ? 'bg-white/95' : 'bg-amber-50/95'
-              } backdrop-blur-sm rounded-lg shadow-lg`}
+              } backdrop-blur-sm rounded-lg shadow-lg overflow-hidden`}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close Button */}
-              <button
-                onClick={handleClose}
-                className={`absolute left-2 top-2 p-1 rounded-full transition-colors ${
-                  isGray 
-                    ? 'hover:bg-gray-200 text-gray-600' 
-                    : 'hover:bg-amber-100 text-amber-600'
-                }`}
-              >
-                <X className="w-5 h-5" />
-              </button>
+              {/* الرأس الثابت */}
+              <div className={`sticky top-0 z-10 ${
+                isGray ? 'bg-white' : 'bg-amber-50'
+              } border-b ${
+                isGray ? 'border-gray-200' : 'border-amber-200'
+              }`}>
+                <button
+                  onClick={handleClose}
+                  className={`absolute left-2 top-2 p-1 rounded-full transition-colors ${
+                    isGray 
+                      ? 'hover:bg-gray-200 text-gray-600' 
+                      : 'hover:bg-amber-100 text-amber-600'
+                  }`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
 
+                <div className="pt-6 pb-4">
+                  <h2 className={`text-xl font-bold flex items-center justify-center gap-2 ${
+                    isGray ? 'text-gray-800' : 'text-amber-800'
+                  }`}>
+                    <Trophy className="w-6 h-6" />
+                    <span>الأعلى نقاطاً على مستوى الحلقات</span>
+                    <Trophy className="w-6 h-6" />
+                  </h2>
+                </div>
+              </div>
+
+              {/* محتوى قابل للتمرير */}
               {loading ? (
                 <div className="p-8 text-center">جاري التحميل...</div>
               ) : (
-                <table className="w-full">
-                  <thead>
-                    <tr className={isGray ? 'bg-gray-100' : 'bg-amber-100'}>
-                      <th className="px-6 py-3 text-right text-lg font-semibold">الطالب</th>
-                      <th className="px-6 py-3 text-center text-lg font-semibold">النقاط</th>
-                      <th className="px-6 py-3 text-center text-lg font-semibold">الحلقة</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
+                  <div className="p-4 space-y-3">
                     {topStudents.map((student, index) => (
-                      <tr key={index} className={`${
-                        isGray 
-                          ? index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                          : index % 2 === 0 ? 'bg-amber-50/50' : 'bg-amber-50'
-                      }`}>
-                        <td className="px-6 py-4 text-right font-medium">{student.name}</td>
-                        <td className="px-6 py-4 text-center">{student.points}</td>
-                        <td className="px-6 py-4 text-center">{student.level}</td>
-                      </tr>
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={`p-4 rounded-lg border ${getRankStyle(index)} transition-all hover:shadow-md`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="font-bold text-lg">{student.name}</div>
+                            <div className="text-sm text-gray-600 mt-1">
+                              النقاط: {student.points} | الحلقة: {student.level}
+                            </div>
+                          </div>
+                          <div className="pl-4">
+                            {getRankIcon(index)}
+                          </div>
+                        </div>
+                      </motion.div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                </div>
               )}
             </div>
           </motion.div>
