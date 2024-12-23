@@ -48,27 +48,52 @@ const getCelebrationConfig = (points: number) => {
 export function StudentCard({ student, onReset, onSearch, isSearching }: StudentCardProps) {
   const celebrationConfig = getCelebrationConfig(student.points);
   const [showRecords, setShowRecords] = useState(false);
+  const [resetTimer, setResetTimer] = useState<NodeJS.Timeout | null>(null);
+
+  const startResetTimer = (duration: number = 10000) => {
+    if (resetTimer) {
+      clearTimeout(resetTimer);
+    }
+    const timer = setTimeout(onReset, duration);
+    setResetTimer(timer);
+    return timer;
+  };
+
+  const clearResetTimer = () => {
+    if (resetTimer) {
+      clearTimeout(resetTimer);
+      setResetTimer(null);
+    }
+  };
 
   useEffect(() => {
-    const timer = setTimeout(onReset, 10000);
+    const timer = startResetTimer();
     
-    const resetTimer = () => {
-      clearTimeout(timer);
-      const newTimer = setTimeout(onReset, 10000);
-      return () => clearTimeout(newTimer);
+    const resetTimerOnInteraction = () => {
+      if (!showRecords) {
+        startResetTimer();
+      }
     };
 
-    window.addEventListener('click', resetTimer);
-    window.addEventListener('touchstart', resetTimer);
-    window.addEventListener('keypress', resetTimer);
+    window.addEventListener('click', resetTimerOnInteraction);
+    window.addEventListener('touchstart', resetTimerOnInteraction);
+    window.addEventListener('keypress', resetTimerOnInteraction);
 
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener('click', resetTimer);
-      window.removeEventListener('touchstart', resetTimer);
-      window.removeEventListener('keypress', resetTimer);
+      clearResetTimer();
+      window.removeEventListener('click', resetTimerOnInteraction);
+      window.removeEventListener('touchstart', resetTimerOnInteraction);
+      window.removeEventListener('keypress', resetTimerOnInteraction);
     };
-  }, [onReset]);
+  }, [onReset, showRecords]);
+
+  useEffect(() => {
+    if (showRecords) {
+      clearResetTimer();
+    } else {
+      startResetTimer(1000);
+    }
+  }, [showRecords]);
 
   return (
     <div>
