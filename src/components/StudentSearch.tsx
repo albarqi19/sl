@@ -22,7 +22,7 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
   const [studentId, setStudentId] = useState('');
 
   useEffect(() => {
-    if (studentId.length === 10) {
+    if (studentId.trim() && studentId.length >= 1) {
       handleManualSubmit();
     }
   }, [studentId]);
@@ -50,7 +50,6 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
             placeholder="بحث سريع برقم الهوية"
             className={`w-full px-3 py-2 rounded-lg transition-colors ${isGray ? 'border-gray-200 focus:border-gray-500 focus:ring-gray-200' : 'border-amber-200 focus:border-amber-500 focus:ring-amber-200'}`}
             autoFocus={autoFocus}
-            maxLength={10}
             disabled={isSearching}
           />
         </form>
@@ -81,7 +80,6 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
               placeholder="أدخل رقم هوية الطالب"
               className={`w-full px-4 py-3 rounded-lg transition-colors ${isGray ? 'border-gray-200 focus:border-gray-500 focus:ring-gray-200' : 'border-amber-200 focus:border-amber-500 focus:ring-amber-200'}`}
               autoFocus={autoFocus}
-              maxLength={10}
               disabled={isSearching}
             />
           </form>

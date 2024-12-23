@@ -11,6 +11,7 @@ import { AppTitle } from './components/AppTitle';
 import { Footer } from './components/Footer';
 import { Levels } from './components/Levels';
 import { Rules } from './components/Rules';
+import { TopStudents } from './components/TopStudents';
 
 export default function App() {
   const [studentData, setStudentData] = useState<Student | null>(null);
@@ -123,19 +124,14 @@ export default function App() {
                     setShowRules(!showRules);
                     setShowLevels(false);
                   }}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
-                    isGray
-                      ? showRules
-                        ? 'bg-gray-700 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      : showRules
-                        ? 'bg-amber-600 text-white'
-                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                    isGray ? 'bg-gray-100 hover:bg-gray-200' : 'bg-amber-100 hover:bg-amber-200'
+                  } transition-colors`}
                 >
-                  <BookOpen className="w-5 h-5" />
-                  البنود
+                  <BookOpen size={20} />
+                  <span>البنود</span>
                 </button>
+                <TopStudents isGray={isGray} />
               </div>
               {showLevels && (
                 <div className="mt-4">
