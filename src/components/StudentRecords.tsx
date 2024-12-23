@@ -140,7 +140,7 @@ export const StudentRecords: React.FC<StudentRecordsProps> = ({
                           <div>
                             <div className="font-bold text-lg">{record.reason}</div>
                             <div className="text-sm text-gray-600">
-                              الصفحات: {record.pages}
+                              النقاط المضافة: {record.pages}
                             </div>
                           </div>
                           <div className="text-sm text-gray-500 flex items-center gap-1">
@@ -150,7 +150,6 @@ export const StudentRecords: React.FC<StudentRecordsProps> = ({
                         </div>
                         <div className="flex justify-between text-sm text-gray-600">
                           <div>المعلم: {record.teacherName}</div>
-                          <div>النقاط: {record.totalPoints}</div>
                         </div>
                       </div>
                     </motion.div>
