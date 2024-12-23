@@ -49,8 +49,9 @@ export function StudentCard({ student, onReset, onSearch, isSearching }: Student
   const celebrationConfig = getCelebrationConfig(student.points);
   const [showRecords, setShowRecords] = useState(false);
   const [resetTimer, setResetTimer] = useState<NodeJS.Timeout | null>(null);
+  const DEFAULT_TIMEOUT = 10000; // 10 seconds
 
-  const startResetTimer = (duration: number = 10000) => {
+  const startResetTimer = (duration: number = DEFAULT_TIMEOUT) => {
     if (resetTimer) {
       clearTimeout(resetTimer);
     }
@@ -66,32 +67,40 @@ export function StudentCard({ student, onReset, onSearch, isSearching }: Student
     }
   };
 
+  // المؤقت الأساسي عند عرض البطاقة
   useEffect(() => {
-    const timer = startResetTimer();
-    
-    const resetTimerOnInteraction = () => {
-      if (!showRecords) {
-        startResetTimer();
-      }
-    };
+    if (!showRecords) {
+      const timer = startResetTimer();
+      
+      const resetTimerOnInteraction = () => {
+        if (!showRecords) {
+          startResetTimer();
+        }
+      };
 
-    window.addEventListener('click', resetTimerOnInteraction);
-    window.addEventListener('touchstart', resetTimerOnInteraction);
-    window.addEventListener('keypress', resetTimerOnInteraction);
+      window.addEventListener('click', resetTimerOnInteraction);
+      window.addEventListener('touchstart', resetTimerOnInteraction);
+      window.addEventListener('keypress', resetTimerOnInteraction);
 
-    return () => {
-      clearResetTimer();
-      window.removeEventListener('click', resetTimerOnInteraction);
-      window.removeEventListener('touchstart', resetTimerOnInteraction);
-      window.removeEventListener('keypress', resetTimerOnInteraction);
-    };
+      return () => {
+        clearResetTimer();
+        window.removeEventListener('click', resetTimerOnInteraction);
+        window.removeEventListener('touchstart', resetTimerOnInteraction);
+        window.removeEventListener('keypress', resetTimerOnInteraction);
+      };
+    }
   }, [onReset, showRecords]);
 
+  // التحكم في المؤقت عند فتح/إغلاق السجل
   useEffect(() => {
     if (showRecords) {
       clearResetTimer();
-    } else {
-      startResetTimer(1000);
+    } else if (resetTimer === null) {
+      // فقط عند إغلاق السجل وليس عند التحميل الأولي
+      const timer = setTimeout(() => {
+        startResetTimer(DEFAULT_TIMEOUT);
+      }, 1000);
+      return () => clearTimeout(timer);
     }
   }, [showRecords]);
 
