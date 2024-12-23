@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   AlertCircle,
@@ -48,61 +48,82 @@ const getCelebrationConfig = (points: number) => {
 export function StudentCard({ student, onReset, onSearch, isSearching }: StudentCardProps) {
   const celebrationConfig = getCelebrationConfig(student.points);
   const [showRecords, setShowRecords] = useState(false);
+  const [isClosingFromRecords, setIsClosingFromRecords] = useState(false);
   const [resetTimer, setResetTimer] = useState<NodeJS.Timeout | null>(null);
   const DEFAULT_TIMEOUT = 10000; // 10 seconds
+  const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const startResetTimer = (duration: number = DEFAULT_TIMEOUT) => {
-    if (resetTimer) {
-      clearTimeout(resetTimer);
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current);
     }
     const timer = setTimeout(onReset, duration);
+    resetTimerRef.current = timer;
     setResetTimer(timer);
     return timer;
   };
 
   const clearResetTimer = () => {
-    if (resetTimer) {
-      clearTimeout(resetTimer);
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = null;
       setResetTimer(null);
     }
   };
 
-  // المؤقت الأساسي عند عرض البطاقة
+  // المؤقت الأساسي عند عرض البطاقة لأول مرة
   useEffect(() => {
-    if (!showRecords) {
-      const timer = startResetTimer();
-      
-      const resetTimerOnInteraction = () => {
-        if (!showRecords) {
-          startResetTimer();
-        }
-      };
-
-      window.addEventListener('click', resetTimerOnInteraction);
-      window.addEventListener('touchstart', resetTimerOnInteraction);
-      window.addEventListener('keypress', resetTimerOnInteraction);
-
-      return () => {
-        clearResetTimer();
-        window.removeEventListener('click', resetTimerOnInteraction);
-        window.removeEventListener('touchstart', resetTimerOnInteraction);
-        window.removeEventListener('keypress', resetTimerOnInteraction);
-      };
+    if (!showRecords && !isClosingFromRecords) {
+      startResetTimer();
     }
-  }, [onReset, showRecords]);
+    return () => clearResetTimer();
+  }, []);
+
+  // إعادة تعيين المؤقت عند التفاعل
+  useEffect(() => {
+    if (showRecords || isClosingFromRecords) {
+      return;
+    }
+
+    const resetTimerOnInteraction = () => {
+      if (!showRecords && !isClosingFromRecords) {
+        startResetTimer();
+      }
+    };
+
+    window.addEventListener('click', resetTimerOnInteraction);
+    window.addEventListener('touchstart', resetTimerOnInteraction);
+    window.addEventListener('keypress', resetTimerOnInteraction);
+
+    return () => {
+      window.removeEventListener('click', resetTimerOnInteraction);
+      window.removeEventListener('touchstart', resetTimerOnInteraction);
+      window.removeEventListener('keypress', resetTimerOnInteraction);
+    };
+  }, [showRecords, isClosingFromRecords]);
 
   // التحكم في المؤقت عند فتح/إغلاق السجل
   useEffect(() => {
     if (showRecords) {
       clearResetTimer();
-    } else if (resetTimer === null) {
-      // فقط عند إغلاق السجل وليس عند التحميل الأولي
+    } else if (isClosingFromRecords) {
+      // عند إغلاق السجل، انتظر ثانية واحدة ثم اغلق البطاقة
       const timer = setTimeout(() => {
-        startResetTimer(DEFAULT_TIMEOUT);
+        onReset();
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [showRecords]);
+  }, [showRecords, isClosingFromRecords]);
+
+  const handleViewRecords = () => {
+    clearResetTimer();
+    setShowRecords(true);
+  };
+
+  const handleCloseRecords = () => {
+    setShowRecords(false);
+    setIsClosingFromRecords(true);
+  };
 
   return (
     <div>
@@ -194,7 +215,7 @@ export function StudentCard({ student, onReset, onSearch, isSearching }: Student
         {/* زر السجل */}
         <div className="max-w-[75%] mx-auto">
           <button
-            onClick={() => setShowRecords(true)}
+            onClick={handleViewRecords}
             className="w-full p-3 rounded-lg text-center transition-all
               bg-gradient-to-r from-amber-500/10 to-amber-600/10 
               hover:from-amber-500/20 hover:to-amber-600/20
@@ -270,7 +291,7 @@ export function StudentCard({ student, onReset, onSearch, isSearching }: Student
         <StudentRecords
           studentId={student.id}
           isOpen={showRecords}
-          onClose={() => setShowRecords(false)}
+          onClose={handleCloseRecords}
           isGray={false}
         />
       </motion.div>
