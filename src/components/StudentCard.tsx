@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   AlertCircle,
   ArrowLeft,
   Award,
   Target,
-  Trophy
+  Trophy,
+  History
 } from 'lucide-react';
 import type { Student } from '../types';
 import Confetti from 'react-confetti';
+import { StudentRecords } from './StudentRecords';
 
 interface StudentCardProps {
   student: Student;
@@ -45,6 +47,7 @@ const getCelebrationConfig = (points: number) => {
 
 export function StudentCard({ student, onReset, onSearch, isSearching }: StudentCardProps) {
   const celebrationConfig = getCelebrationConfig(student.points);
+  const [showRecords, setShowRecords] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(onReset, 10000);
@@ -154,6 +157,21 @@ export function StudentCard({ student, onReset, onSearch, isSearching }: Student
           </div>
         </div>
 
+        {/* زر السجل */}
+        <div className="max-w-[75%] mx-auto">
+          <button
+            onClick={() => setShowRecords(true)}
+            className="w-full p-3 rounded-lg text-center transition-all
+              bg-gradient-to-r from-amber-500/10 to-amber-600/10 
+              hover:from-amber-500/20 hover:to-amber-600/20
+              border border-amber-200 text-amber-700
+              flex items-center justify-center gap-2"
+          >
+            <History className="w-5 h-5" />
+            <span>عرض السجل</span>
+          </button>
+        </div>
+
         {/* المستوى التالي */}
         {student.nextLevel && (
           <div className="max-w-[75%] mx-auto">
@@ -213,6 +231,14 @@ export function StudentCard({ student, onReset, onSearch, isSearching }: Student
             </ul>
           </motion.div>
         )}
+        
+        {/* نافذة السجل */}
+        <StudentRecords
+          studentId={student.id}
+          isOpen={showRecords}
+          onClose={() => setShowRecords(false)}
+          isGray={false}
+        />
       </motion.div>
     </div>
   );
