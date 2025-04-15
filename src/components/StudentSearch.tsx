@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { QRScanner } from './QRScanner';
-import { QrCode } from 'lucide-react';
+import { QrCode, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface StudentSearchProps {
@@ -20,12 +20,6 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
 }) => {
   const [showQR, setShowQR] = useState(false);
   const [studentId, setStudentId] = useState('');
-
-  useEffect(() => {
-    if (studentId.trim() && studentId.length >= 1) {
-      handleManualSubmit();
-    }
-  }, [studentId]);
 
   const handleManualSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -52,6 +46,17 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
             autoFocus={autoFocus}
             disabled={isSearching}
           />
+          <button
+            type="submit"
+            disabled={isSearching}
+            className={`px-4 py-2 rounded-lg ${
+              isGray 
+                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
+                : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+            }`}
+          >
+            <Search className="w-5 h-5" />
+          </button>
         </form>
       </motion.div>
     );
@@ -72,7 +77,7 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
         </div>
       ) : (
         <div className="space-y-4">
-          <form onSubmit={handleManualSubmit}>
+          <form onSubmit={handleManualSubmit} className="flex gap-2">
             <input
               type="text"
               value={studentId}
@@ -82,6 +87,17 @@ export const StudentSearch: React.FC<StudentSearchProps> = ({
               autoFocus={autoFocus}
               disabled={isSearching}
             />
+            <button
+              type="submit"
+              disabled={isSearching}
+              className={`px-4 py-3 rounded-lg ${
+                isGray 
+                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
+                  : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+              }`}
+            >
+              <Search className="w-5 h-5" />
+            </button>
           </form>
 
           <button
